@@ -6,7 +6,7 @@ To get started, you will need to get an OAUTH token from Twitch at https://twitc
 
 Do not share your OAUTH token with anyone. If you're doing development on stream, read further down to see ways to keep your token a secret.
 
-```
+```csharp
 using okitoki.twitch.irc.client;
 
 string login = "twitch_login_username";
@@ -20,21 +20,21 @@ client.Connect();
 
 Once you have a client, you can then use it to join any Twitch channel (as long as the user you are using isn't banned in that channel):
 
-```
+```csharp
 string channelName = "rabbit_xxxx";
 client.JoinChannel(channelName);
 ```
 
 If you want the TwitchClient to queue messages up so that you can process them later, you can set the optional queueMessages paramter to true when you call JoinChannel:
 
-```
+```csharp
 client.JoinChannel(channelName, true);
 ```
 
 # Keeping your token a secret (Method 1)
 There are some mechanisms built into this API to help keep your OAUTH token a secret. One method you can use is to encrypt the token to a local file and load it in at runtime. The first time you create a Twitch client, you can tell it to store the credentials (username and OAUTH token). The encrypted credentials are stored in a file called "tc.crd" by default:
 
-```
+```csharp
 TwitchClient client = new TwitchClient();
 client.Credentials = new Credentials(login, oauthToken);
 client.StoreCredentials(myEncryptionPassword);
@@ -42,7 +42,7 @@ client.StoreCredentials(myEncryptionPassword);
 
 Once you have run the program and stored the credentials, change the code by deleting the lines where credentials are being set and stored and just call LoadCredentials():
 
-```
+```csharp
 TwitchClient client = new TwitchClient();
 client.LoadCredentials(myEncryptionPassword);
 ```
