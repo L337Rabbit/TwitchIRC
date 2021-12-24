@@ -227,6 +227,13 @@ client.OnHostMessageReceived += HostReceived;
 ```
 
 # Sending Messages in Chat
+To send a message in chat, just use the SendChatMessage() method after joining a channel:
+
+```csharp
+string channelName = ...
+string message = "Goodbye world :)";
+client.SendChatMessage(channelName, message);
+```
 
 # Getting Information About Viewers
 The TwtichClient can automatically gather certain information about viewers as they send messages in chat. The amount of information obtained about viewers using this mechanism is limited, but includes the following:
@@ -239,6 +246,24 @@ The TwtichClient can automatically gather certain information about viewers as t
 | NameColor | The hex color code used in chat for this user's name. |
 | EmoteSets | A List of IDs for the emote sets which the user has available. |
 
+A list of Viewer data can be obtained from the TwitchClient directly. Each key in the Dictionary is the viewer's login name.
+
+```csharp
+Dictionary<string, Viewer> viewers = client.Viewers;
+```
+
+To get global information about a specific viewer, use the GetViewer() method:
+
+```csharp
+string viewerName = ...
+Viewer viewer = client.GetViewer(viewerName);
+
+if(viewer != null) 
+{
+    //Do something...
+}
+```
+
 Additionally, the TwitchClient can gather information about viewers on a per-channel basis. This information includes the following:
 
 | Property Name | Description |
@@ -247,6 +272,27 @@ Additionally, the TwitchClient can gather information about viewers on a per-cha
 | IsMod | Whether the viewer is a mod in the channel. |
 | ViewerType | The type of viewer (ADMIN, BROADCASTER, GLOBAL_MODERATOR, MODERATOR, STAFF, VIEWER, or VIP). |
 | Badges | A collection of Badges applicable to the viewer. Usually displayed to the left of the viewer's name in Twitch chat. |
+
+To get channel specific information about a viewer (if available), use the GetViewerInfo() method:
+
+```csharp
+string channelName = ...
+string viewerName = ...
+ViewerChannelInfo viewerInfo = client.GetViewerInfo(channelName, viewerName);
+
+if(viewerInfo != null) 
+{
+    //Do something...
+}
+```
+
+Note that not all information about viewers will be available at all times, since certain information only comes in with certain types of messages. You will need to check for null values on various fields before using them.
+
+To disable viewer tracking, set ViewerTrackingEnabled to false on the TwitchClient:
+
+```csharp
+client.ViewerTrackingEnabled = false;
+```
 
 # Using the Message Queue
 There is a message queue which can retain IRC messages for later processing automatically. To turn it on when joining a channel, pass 'true' as the second parameter:
