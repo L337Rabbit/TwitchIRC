@@ -284,7 +284,7 @@ foreach(IRCMessage message in messageQueue)
 ```
 
 # Loading the Current List of Viewers
-The TwitchClient has a method which can be used to pull a list of all viewer names currently in a channel. This method should not be called frequently, otherwise you risk having your access blocked. Do not call this method more than once per minute. If you are using the TwitchClient, it is recommended that you only call this method once at application start time to sync the viewers monitored by the client with the live channel. The TwitchClient will automatically track viewers as they enter and leave after that so the method does not need to be called again.
+The TwitchClient has a method which can be used to pull a list of all viewer names currently in a channel. This method should not be called frequently, otherwise you risk having your access blocked. Do not call this method more than once per minute. If you are using the TwitchClient, it is recommended that you only call this method once at application start time to sync the viewers monitored by the client with the live channel. The TwitchClient will automatically track viewers as they enter and leave after that so the method does not need to be called again. Calling this method before calling client.Connect() is recommended but not necessary.
 
 ```csharp
 string channelName = ...
