@@ -74,7 +74,7 @@ This API supports nearly the entirety of the Twitch IRC message library and is t
 ## Message Handler Table
 
 | Handler Name | Message Type | Description |
-| --- | --- |
+| --- | --- | --- |
 | OnPrivateMessageReceived | PrivateMessage | Called when a chat message from a specific user comes in. |
 | OnSubReceived | SubscriptionNotice | Called when a subscription notification comes in. |
 | OnGiftedSubReceived | GiftedSubscriptionNotice | Called when a gifted subscription comes in. |
