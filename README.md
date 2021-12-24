@@ -72,6 +72,7 @@ This method is less secure since anyone with access to the credentials file has 
 This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented in the **Examples** section below. All messages can be received and relayed to your own methods for processing using the event handlers of the TwitchClient. The various types of message event handlers available are described in the following table:
 
 | Handler Name | Description |
+| --- | --- |
 | OnPrivateMessageReceived | Called when a chat message from a specific user comes in. |
 | OnSubReceived | Called when a subscription notification comes in. |
 | OnGiftedSubReceived | Called when a gifted subscription comes in. |
