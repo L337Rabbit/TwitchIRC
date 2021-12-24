@@ -4,7 +4,7 @@ C#/.NET API for sending and receiving Twitch IRC chat messages.
 # Creating a simple chat client
 To get started, you will need to get an OAUTH token from Twitch at https://twitchapps.com/tmi/. See https://dev.twitch.tv/docs/irc/guide for further info.
 
-Do not share your OAUTH token with anyone. If you're doing development on stream, read further down to see ways to keep your token a secret.
+Do not share your OAUTH token with anyone. If you're doing development on stream, read further down to see 2 methods for keeping your token a secret.
 
 ```csharp
 using okitoki.twitch.irc.client;
@@ -37,14 +37,14 @@ There are some mechanisms built into this API to help keep your OAUTH token a se
 ```csharp
 TwitchClient client = new TwitchClient();
 client.Credentials = new Credentials(login, oauthToken);
-client.StoreCredentials(myEncryptionPassword);
+client.EncryptCredentials(myEncryptionPassword);
 ```
 
-Once you have run the program and stored the credentials, change the code by deleting the lines where credentials are being set and stored and just call LoadCredentials():
+Once you have run the program and stored the credentials, change the code by deleting the lines where credentials are being set and stored and just call DecryptCredentials():
 
 ```csharp
 TwitchClient client = new TwitchClient();
-client.LoadCredentials(myEncryptionPassword);
+client.DecryptCredentials(myEncryptionPassword);
 ```
 
 You can further increase the security of the token by using a password input box to enter the "myEncryptionPassword" password secretly prior to creating the Twitch client and loading credentials.
@@ -52,9 +52,20 @@ You can further increase the security of the token by using a password input box
 # Keeping your token a secret (Method 2)
 As an alternative to method 1 avobe, you can create a credentials file and manually add your login username and OAUTH token to it (unencrypted), then load this credential file when your program runs. The file contents should look like the following:
 
+```json
+{"username":"your_twitch_username","oauth-token":"your_oauth_token"}
+```
 
+Once you have the credentials file in place, you can load it using the LoadCredentials() method:
 
-This method is less secure since anyone with access to the credential file has access to your OAUTH token, but may be a bit easier to set up. If you use this approach, make sure not to open the credential file on stream or share it with anyone, including accidentally committing the file to a code repository like Github.
+```csharp
+string credentialsFilePath = "C:/Users/me/Desktop/credentials.crd";
+
+TwitchClient client = new TwitchClient();
+client.LoadCredentials(credentialsFilePath);
+```
+
+This method is less secure since anyone with access to the credentials file has access to your OAUTH token, but may be a bit easier to set up. If you use this approach, make sure not to open the credential file on stream or share it with anyone, including accidentally committing the file to a code repository like Github.
 
 # Handling specific message types
 This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented below.
