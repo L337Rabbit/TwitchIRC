@@ -31,7 +31,7 @@ client.Connect();
 Note that the OAUTH token should NOT include the "oauth:" portion.
 
 ## Using the Client in Unity
-If using the TwitchClient in Unity, you should also tell the client to Disconnect() in the OnDestroy() method of whatever script is is controlled by. An example of a Unity MonoBehavior using the TwitchClient is below:
+If using the TwitchClient in Unity, you should also tell the client to Disconnect() in the OnDestroy() method of whatever script it is controlled by. An example of a Unity MonoBehavior using the TwitchClient is below:
 
 ```csharp
 using System.Collections;
