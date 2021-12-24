@@ -81,7 +81,10 @@ namespace okitoki.twitch.irc.client
 
         public void QueueMessage(IRCMessage message)
         {
-            MessageQueue.QueueMessage(message);
+            if (MessageQueue.IsActive)
+            {
+                MessageQueue.QueueMessage(message);
+            }
         }
 
         public int ViewerCount
@@ -90,6 +93,16 @@ namespace okitoki.twitch.irc.client
             {
                 return ViewerInfo.Count;
             }
+        }
+
+        public ViewerChannelInfo GetViewerInfo(string viewerName)
+        {
+            if(ViewerInfo.ContainsKey(viewerName.ToLower()))
+            {
+                return ViewerInfo[viewerName.ToLower()];
+            }
+
+            return null;
         }
     }
 }

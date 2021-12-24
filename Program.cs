@@ -26,11 +26,14 @@ namespace okitoki.twitch.irc
             string credentialPassword = "";
 
             TwitchClient client = new TwitchClient();
-            client.LoadCredentials(credentialPassword);
+            client.Credentials = new Credentials(username, oathToken);
+            client.StoreCredentials();
+            //client.LoadCredentials(credentialPassword);
             //client.Credentials = new Credentials(username, oathToken);
             /*client.Credentials = new Credentials(username, oathToken);
             client.StoreCredentials(credentialPassword);*/
 
+            /*
             string channelName = "";
             client.Connect();
             client.ActivateAutoReconnect();
@@ -38,7 +41,7 @@ namespace okitoki.twitch.irc
             client.OnUserStateReceived += UserStateReceived;
             client.OnGlobalUserStateReceived += GlobalUserStateReceived;
             client.OnPrivateMessageReceived += PrivateMessageReceived;
-            client.OnNoticeReceived += NoticeReceived;
+            client.OnNoticeReceived += NoticeReceived;*/
 
             //client.ConnectToWS();
 

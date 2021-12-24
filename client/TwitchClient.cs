@@ -24,6 +24,8 @@ namespace okitoki.twitch.irc.client
     {
         public Dictionary<string, Viewer> Viewers { get; set; } = new Dictionary<string, Viewer>();
 
+        private bool ViewerTrackingEnabled { get; set; } = true;
+
         public Dictionary<string, Channel> Channels { get; set; } = new Dictionary<string, Channel>();
 
         private StreamReader reader;
@@ -31,8 +33,6 @@ namespace okitoki.twitch.irc.client
         private StreamWriter writer;
 
         private TcpClient client;
-
-        //private Socket client;
 
         private Thread messageReceiverThread;
 
@@ -219,8 +219,8 @@ namespace okitoki.twitch.irc.client
             if (!Channels.ContainsKey(channelName))
             {
                 Channel channel = new Channel();
-                channel.Name = channelName;
-                Channels.Add(channelName, channel);
+                channel.Name = channelName.ToLower();
+                Channels.Add(channel.Name, channel);
 
                 if (queueMessages)
                 {
@@ -255,74 +255,6 @@ namespace okitoki.twitch.irc.client
                 {
                     try
                     {
-                        /*int bytesRead = 0;
-                        while((bytesRead = client.Receive(buffer)) > 0)
-                        {
-                            for (int i = 0; i < bytesRead; i++)
-                            {
-                                c = (char)buffer[i];
-                                currentLine += c;
-
-                                if (c == '\n')
-                                {
-                                    IRCMessage message = IRCMessage.ParseMessage(currentLine);
-                                    RelayMessage(message);
-
-                                    if (message == null || message.MessageType == MessageType.UNKNOWN || (message is GeneralUserNotice))
-                                    {
-                                        Console.WriteLine("General/Unknown message: " + currentLine);
-                                    }
-
-                                    currentLine = null;
-                                }
-                            }
-                        }
-
-                        /*int numBytes;
-                        if((numBytes = Math.Min(client.Available, buffer.Length)) > 0)
-                        {
-                            int bytesRead = client.Receive(buffer, numBytes, SocketFlags.None);
-
-                            for (int i = 0; i < bytesRead; i++)
-                            {
-                                c = (char)buffer[i];
-                                currentLine += c;
-
-                                if (c == '\n')
-                                {
-                                    IRCMessage message = IRCMessage.ParseMessage(currentLine);
-                                    RelayMessage(message);
-
-                                    if (message == null || message.MessageType == MessageType.UNKNOWN || (message is GeneralUserNotice))
-                                    {
-                                        Console.WriteLine("General/Unknown message: " + currentLine);
-                                    }
-
-                                    currentLine = null;
-                                }
-                            }
-                        }*/
-
-                        //currentLine = reader.ReadLine();
-                        /*if((character = reader.Peek()) > -1)
-                        {
-                            c = (char)reader.Read();
-                            currentLine += c;
-
-                            if(c == '\n')
-                            {
-                                IRCMessage message = IRCMessage.ParseMessage(currentLine);
-                                RelayMessage(message);
-
-                                if (message == null || message.MessageType == MessageType.UNKNOWN || (message is GeneralUserNotice))
-                                {
-                                    Console.WriteLine("General/Unknown message: " + currentLine);
-                                }
-
-                                currentLine = null;
-                            }
-                        }*/
-
                         currentLine = null;
 
                         if (!reader.EndOfStream)
@@ -388,7 +320,11 @@ namespace okitoki.twitch.irc.client
             reader.Close();
 
             ViewerList viewers = JsonSerializer.Deserialize<ViewerList>(viewerList);
-            UpdateViewersFromList(channelName, viewers);
+
+            if (ViewerTrackingEnabled)
+            {
+                UpdateViewersFromList(channelName, viewers);
+            }
 
             Console.WriteLine("Viewer count: " + viewers.ViewerCount);
             return viewers;
@@ -524,6 +460,11 @@ namespace okitoki.twitch.irc.client
 
         private void UserMessageReceived(object sender, UserMessage message)
         {
+            if(!ViewerTrackingEnabled)
+            {
+                return;
+            }
+
             Viewer viewer = null;
 
             if (message.Username != null)
@@ -630,7 +571,52 @@ namespace okitoki.twitch.irc.client
             }
         }
 
-        public void StoreCredentials(string password, string filePath = "tc.crd")
+        public void StoreCredentials(string filePath = "tc.crd")
+        {
+            if (Credentials != null)
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+
+                    string json = JsonSerializer.Serialize(Credentials, typeof(Credentials));
+                    writer.WriteLine(json);
+                    writer.Flush();
+                }
+            }
+        }
+
+        public Credentials LoadCredentials(string filePath = "tc.crd")
+        {
+            Credentials credentials = null;
+
+            if (File.Exists(filePath))
+            {
+                string json = null;
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        json += reader.ReadLine();
+                    }
+                }
+
+                if (json != null)
+                {
+                    Console.WriteLine("Credentials JSON: " + json);
+                    credentials = JsonSerializer.Deserialize<Credentials>(json);
+                    this.Credentials = credentials;
+                }
+            }
+
+            return credentials;
+        }
+
+        public void EncryptCredentials(string password, string filePath = "tc.crd")
         {
             if (Credentials != null)
             {
@@ -649,7 +635,7 @@ namespace okitoki.twitch.irc.client
             }
         }
 
-        public Credentials LoadCredentials(string password, string filePath = "tc.crd")
+        public Credentials DecryptCredentials(string password, string filePath = "tc.crd")
         {
             Credentials credentials = null;
 
@@ -674,6 +660,38 @@ namespace okitoki.twitch.irc.client
             }
 
             return credentials;
+        }
+
+        public Channel GetChannel(string channelName)
+        {
+            if(Channels.ContainsKey(channelName.ToLower()))
+            {
+                return Channels[channelName.ToLower()];
+            }
+
+            return null;
+        }
+
+        public Viewer GetViewer(string viewerName)
+        {
+            if(Viewers.ContainsKey(viewerName.ToLower()))
+            {
+                return Viewers[viewerName.ToLower()];
+            }
+
+            return null;
+        }
+
+        public ViewerChannelInfo GetViewerInfo(string channelName, string viewerName)
+        {
+            if (Channels.ContainsKey(channelName.ToLower()))
+            {
+                Channel channel = Channels[channelName.ToLower()];
+
+                return channel.GetViewerInfo(viewerName);
+            }
+
+            return null;
         }
     }
 }

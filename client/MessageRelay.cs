@@ -14,30 +14,30 @@ namespace okitoki.twitch.irc.client
 {
     public class MessageRelay
     {
-        public EventHandler<GeneralUserNotice> OnGeneratlUserNoticeReceived;
-        public EventHandler<SubscriptionNotice> OnSubReceived;
-        public EventHandler<GiftedSubscriptionNotice> OnGiftedSubReceived;
-        public EventHandler<BitsBadgeTierChangeNotice> OnBitsBadgeTierUpdateReceived;
-        public EventHandler<GiftToPaidSubscriptionUpgradeNotice> OnGiftSubUpgradeReceived;
-        public EventHandler<PrimeToPaidSubscriptionUpgradeNotice> OnPrimeSubUpgradeReceived;
-        public EventHandler<RaidNotice> OnRaidMessageReceived;
-        public EventHandler<RitualNotice> OnRitualMessageReceived;
-        public EventHandler<UnraidNotice> OnUnraidMessageReceived;
-        public EventHandler<ClearAllMessage> OnClearAllMessagesOfUserReceived;
-        public EventHandler<ClearSingleMessage> OnClearSingleUserMessageReceived;
-        public EventHandler<GlobalUserStateMessage> OnGlobalUserStateReceived;
-        public EventHandler<HostTargetMessage> OnHostMessageReceived;
-        public EventHandler<NoticeMessage> OnNoticeReceived;
-        public EventHandler<ReconnectMessage> OnReconnectMessageReceived;
-        public EventHandler<RoomStateMessage> OnRoomStateReceived;
-        public EventHandler<UserNoticeMessage> OnUserNoticeReceived;
-        public EventHandler<UserStateMessage> OnUserStateReceived;
-        public EventHandler<JoinMessage> OnJoinMessageReceived;
-        public EventHandler<PartMessage> OnPartMessageReceived;
-        public EventHandler<PrivateMessage> OnPrivateMessageReceived;
-        public EventHandler<PingMessage> OnPingReceived;
-        public EventHandler<IRCMessage> OnAnyMessageReceived;
-        public EventHandler<ChannelSpecificMessage> OnChannelSpecificMessageReceived;
+        public EventHandler<GeneralUserNotice> OnGeneralUserNoticeReceived; //
+        public EventHandler<SubscriptionNotice> OnSubReceived; //
+        public EventHandler<GiftedSubscriptionNotice> OnGiftedSubReceived; //
+        public EventHandler<BitsBadgeTierChangeNotice> OnBitsBadgeTierUpdateReceived; //
+        public EventHandler<GiftToPaidSubscriptionUpgradeNotice> OnGiftSubUpgradeReceived; //
+        public EventHandler<PrimeToPaidSubscriptionUpgradeNotice> OnPrimeSubUpgradeReceived; //
+        public EventHandler<RaidNotice> OnRaidMessageReceived; //
+        public EventHandler<RitualNotice> OnRitualMessageReceived; //
+        public EventHandler<UnraidNotice> OnUnraidMessageReceived; //
+        public EventHandler<ClearAllMessage> OnClearAllMessagesOfUserReceived; //
+        public EventHandler<ClearSingleMessage> OnClearSingleUserMessageReceived; //
+        public EventHandler<GlobalUserStateMessage> OnGlobalUserStateReceived; //
+        public EventHandler<HostTargetMessage> OnHostMessageReceived; //
+        public EventHandler<NoticeMessage> OnNoticeReceived; //
+        public EventHandler<ReconnectMessage> OnReconnectMessageReceived; //
+        public EventHandler<RoomStateMessage> OnRoomStateReceived; //
+        public EventHandler<UserNoticeMessage> OnUserNoticeReceived; //
+        public EventHandler<UserStateMessage> OnUserStateReceived; //
+        public EventHandler<JoinMessage> OnJoinMessageReceived; //
+        public EventHandler<PartMessage> OnPartMessageReceived; //
+        public EventHandler<PrivateMessage> OnPrivateMessageReceived; //
+        public EventHandler<PingMessage> OnPingReceived; //
+        public EventHandler<IRCMessage> OnAnyMessageReceived; //
+        public EventHandler<ChannelSpecificMessage> OnChannelSpecificMessageReceived; //
 
         protected internal EventHandler<IRCMessage> OnUnknownMessageReceived;
         protected internal EventHandler<UserMessage> OnUserMessageReceived;
@@ -171,9 +171,9 @@ namespace okitoki.twitch.irc.client
                     }
                     break;
                 case UserNoticeType.GENERAL:
-                    if(OnGeneratlUserNoticeReceived != null)
+                    if(OnGeneralUserNoticeReceived != null)
                     {
-                        OnGeneratlUserNoticeReceived(this, (GeneralUserNotice)message);
+                        OnGeneralUserNoticeReceived(this, (GeneralUserNotice)message);
                     }
                     break;
                 case UserNoticeType.GIFT_PAID_UPDGRADE:
