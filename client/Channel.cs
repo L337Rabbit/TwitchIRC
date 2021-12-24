@@ -71,17 +71,23 @@ namespace okitoki.twitch.irc.client
 
         public void StartQueue()
         {
-            MessageQueue.Start();
+            if (MessageQueue != null)
+            {
+                MessageQueue.Start();
+            }
         }
 
         public void StopQueue()
         {
-            MessageQueue.Stop();
+            if (MessageQueue != null)
+            {
+                MessageQueue.Stop();
+            }
         }
 
         public void QueueMessage(IRCMessage message)
         {
-            if (MessageQueue.IsActive)
+            if (MessageQueue != null && MessageQueue.IsActive)
             {
                 MessageQueue.QueueMessage(message);
             }

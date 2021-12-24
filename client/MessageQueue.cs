@@ -41,7 +41,10 @@ namespace okitoki.twitch.irc.client
         public void Stop()
         {
             IsActive = false;
-            monitorThread.Interrupt();
+            if (monitorThread != null)
+            {
+                monitorThread.Interrupt();
+            }
         }
 
         public void QueueMessage(IRCMessage message)

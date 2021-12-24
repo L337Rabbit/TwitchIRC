@@ -107,6 +107,12 @@ namespace okitoki.twitch.irc.client
                 return;
             }
 
+            foreach(string channelName in Channels.Keys)
+            {
+                Channel channel = Channels[channelName];
+                channel.StopQueue();
+            }
+
             if (messageReceiverThread.IsAlive)
             {
                 messageReceiverThread.Interrupt();
@@ -216,7 +222,7 @@ namespace okitoki.twitch.irc.client
 
         public void JoinChannel(string channelName, bool queueMessages = false)
         {
-            if (!Channels.ContainsKey(channelName))
+            if (!Channels.ContainsKey(channelName.ToLower()))
             {
                 Channel channel = new Channel();
                 channel.Name = channelName.ToLower();
@@ -228,7 +234,7 @@ namespace okitoki.twitch.irc.client
                 }
             }
 
-            string message = "JOIN #" + channelName;
+            string message = "JOIN #" + channelName.ToLower();
             SendMessage(message);
         }
 
