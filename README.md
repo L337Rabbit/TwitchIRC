@@ -1,12 +1,15 @@
 # TwitchIRC
-C#/.NET API for sending and receiving Twitch IRC chat messages.
+This is a C#/.NET API for sending and receiving Twitch IRC chat messages.
 
 For more information on Twitch's IRC interface see https://dev.twitch.tv/docs/irc/guide.
 
-# Creating a Simple Chat Client
+# Security/Authentication
 To get started, you will need to get an OAUTH token from Twitch at https://twitchapps.com/tmi/. See https://dev.twitch.tv/docs/irc/guide for further info.
 
 Do not share your OAUTH token with anyone. If you're doing development on stream, read further down to see 2 methods for keeping your token a secret.
+
+# Creating a Simple Chat Client
+The heart of this Twitch IRC API is the TwitchClient class. To create a new TwitchClient, you will need to set credentials using a twitch username and OAUTH token (see previous section for that). You can then create a client by doing the following:
 
 ```csharp
 using okitoki.twitch.irc.client;
@@ -19,6 +22,8 @@ client.Credentials = new Credentials(login, oauthToken);
 client.ActivateAutoReconnect();
 client.Connect();
 ```
+
+Note that the OAUTH token should NOT include the "oauth:" portion.
 
 # Joining a Twitch Channel
 Once you have a client, you can then use it to join any Twitch channel (as long as the user you are using isn't banned in that channel):
@@ -109,10 +114,10 @@ All messages can be received and relayed to your own methods for processing usin
 ## General Approach
 To process messages as they come in, you just need to define your own methods and add them to the appropriate handler. The general steps are outlined below:
 
-1. Define a method in your own code with the following format (you can call the method whatever, just make sure the argument types match):
+1. Define a method in your own code with the following format (you can call the method whatever, just make sure the parameter types match):
 
 ```csharp
-private void SomeMessageReceived(object sender, **Message Type** msg) {...}
+void SomeMessageReceived(object sender, **Message Type** msg) {...}
 ```
 
 2. Add your method to the appropriate TwitchClient handler:
@@ -130,7 +135,7 @@ To process messages from individual users in chat, create a method and add it to
 1. Define a method for processing chat messages:
 
 ```csharp
-private void ChatMessageReceived(object sender, PrivateMessage msg) 
+void ChatMessageReceived(object sender, PrivateMessage msg) 
 {
     //Do whatever you want here.
     //Console.WriteLine("Received private message: " + msg.Channel + "/" + msg.Username + ": " + msg.Message);
@@ -149,13 +154,13 @@ To track when viewers enter and leave a joined channel, you should create method
 1. Define method two methods. One for processing when viewers enter and another for processing when viewers leave:
 
 ```csharp
-private void ViewerJoined(object sender, JoinMessage msg) 
+void ViewerJoined(object sender, JoinMessage msg) 
 {
     //Do whatever you want here.
     //Console.WriteLine("" + msg.User + " joined " + msg.Channel + "'s channel.");
 }
 
-private void ViewerLeft(object sender, PartMessage msg) 
+void ViewerLeft(object sender, PartMessage msg) 
 {
     //Do whatever you want here.
     //Console.WriteLine("" + msg.User + " left " + msg.Channel + "'s channel.");
@@ -175,7 +180,7 @@ If you need to incorporate logic whenever normal paid subscriptions come in, you
 1. Define a method for processing subscription messages:
 
 ```csharp
-private void SubReceived(object sender, SubscriptionNotice msg) 
+void SubReceived(object sender, SubscriptionNotice msg) 
 {
     //Do whatever you want here.
     //Console.WriteLine("" + msg.Username + " subscribed to " + msg.Channel + " for " + msg.TotalMonthsSubscribed + " months total.");
@@ -194,7 +199,7 @@ To detect and handle raids, add a method to the OnRaidMessageReceived handler of
 1. Define a method for processing raids:
 
 ```csharp
-private void RaidReceived(object sender, RaidNotice msg) 
+void RaidReceived(object sender, RaidNotice msg) 
 {
     //Do whatever you want here.
     //Console.WriteLine("" + msg.RaiderDisplayName + " is raiding " + msg.Channel + " with " + msg.ViewerCount + " viewers.");
@@ -213,7 +218,7 @@ To detect and handle hosts, add a method to the OnHostMessageReceived handler of
 1. Define a method for processing channel hosts:
 
 ```csharp
-private void HostReceived(object sender, HostTargetMessage msg) 
+void HostReceived(object sender, HostTargetMessage msg) 
 {
     //Do whatever you want here.
     //Console.WriteLine("Received host message. " + msg.HostingChannel + " is now hosting " + msg.TargetChannel + " with " + msg.ViewerCount + " viewers.");
