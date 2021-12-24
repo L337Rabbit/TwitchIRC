@@ -68,8 +68,12 @@ client.LoadCredentials(credentialsFilePath);
 
 This method is less secure since anyone with access to the credentials file has access to your OAUTH token, but may be a bit easier to set up. If you use this approach, make sure not to open the credential file on stream or share it with anyone, including accidentally committing the file to a code repository like Github.
 
-# Handling specific message types
-This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented in the **Examples** section below. All messages can be received and relayed to your own methods for processing using the event handlers of the TwitchClient. The various types of message event handlers available are described in the following table.
+# Handling Specific Message Types
+This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented in the **Examples** section below. 
+
+Twitch sends a number of different types of messages to IRC clients notifying them of chat messages, subs, gifted subs, hosts, raids, and more. Each type of message is a different *type* in this API and contains various fields/properties relevant to the type of message. Not all fields will always be set so it is up to the end-user of the API to check for null values during processing. 
+
+All messages can be received and relayed to your own methods for processing using the event handlers of the TwitchClient. The various types of message event handlers available are described in the following table.
 
 ## Message Handler Table
 
@@ -119,13 +123,15 @@ Now, whenever a message comes in, your method will run!
 
 ## Examples:
 ### Processing Viewer Messages
+To process messages from individual users in chat, create a method and add it to the OnPrivateMessageReceived handler of the TwitchClient. Whenever a PrivateMessage comes in, it will be sent to your method and you can handle it appropriately.
 
 1. Define a method for processing chat messages:
 
 ```csharp
 private void ChatMessageReceived(object sender, PrivateMessage msg) 
 {
-    Console.WriteLine("Received private message: " + msg.Channel + "/" + msg.Username + ": " + msg.Message);
+    //Do whatever you want here.
+    //Console.WriteLine("Received private message: " + msg.Channel + "/" + msg.Username + ": " + msg.Message);
 }
 ```
 
@@ -136,17 +142,87 @@ client.OnPrivateMessageReceived += ChatMessageReceived;
 ```
 
 ### Tracking Viewers Entering/Leaving
+To track when viewers enter and leave a joined channel, you should create methods and add them to the OnJoinMessageReceived and OnPartMessageReceived handlers of the TwitchClient. Note: Messages about viewers joining and leaving are not sent by Twitch servers as they occur, but rather they are queued and sent periodically.
 
+1. Define method two methods. One for processing when viewers enter and another for processing when viewers leave:
 
+```csharp
+private void ViewerJoined(object sender, JoinMessage msg) 
+{
+    //Do whatever you want here.
+    //Console.WriteLine("" + msg.User + " joined " + msg.Channel + "'s channel.");
+}
+
+private void ViewerLeft(object sender, PartMessage msg) 
+{
+    //Do whatever you want here.
+    //Console.WriteLine("" + msg.User + " left " + msg.Channel + "'s channel.");
+}
+```
+
+2. Add your methods to the appropriate TwitchClient handlers:
+
+```csharp
+client.OnJoinMessageReceived += ViewerJoined;
+client.OnPartMessageReceived += ViewerLeft;
+```
 
 ### Detecting Subscriptions
+If you need to incorporate logic whenever normal paid subscriptions come in, you can process SubscriptionNotices by adding your own method to the OnSubReceived handler of the TwitchClient.
 
+1. Define a method for processing subscription messages:
 
+```csharp
+private void SubReceived(object sender, SubscriptionNotice msg) 
+{
+    //Do whatever you want here.
+    //Console.WriteLine("" + msg.Username + " subscribed to " + msg.Channel + " for " + msg.TotalMonthsSubscribed + " months total.");
+}
+```
+
+2. Add your method to the appropriate TwitchClient handler:
+
+```csharp
+client.OnSubReceived += SubReceived;
+```
 
 ### Detecting Raids
+To detect and handle raids, add a method to the OnRaidMessageReceived handler of the TwitchClient.
+
+1. Define a method for processing raids:
+
+```csharp
+private void RaidReceived(object sender, RaidNotice msg) 
+{
+    //Do whatever you want here.
+    //Console.WriteLine("" + msg.RaiderDisplayName + " is raiding " + msg.Channel + " with " + msg.ViewerCount + " viewers.");
+}
+```
+
+2. Add your method to the appropriate TwitchClient handler:
+
+```csharp
+client.OnRaidMessageReceived += RaidReceived;
+```
 
 ### Detecting Hosts
+To detect and handle hosts, add a method to the OnHostMessageReceived handler of the TwitchClient.
 
+1. Define a method for processing channel hosts:
+
+```csharp
+private void HostReceived(object sender, HostTargetMessage msg) 
+{
+    //Do whatever you want here.
+    //Console.WriteLine("Received host message. " + msg.HostingChannel + " is now hosting " + msg.TargetChannel + " with " + msg.ViewerCount + " viewers.");
+}
+```
+
+2. Add your method to the appropriate TwitchClient handler:
+
+```csharp
+client.OnHostMessageReceived += HostReceived;
+```
 
 # Sending Messages in Chat
 
@@ -171,5 +247,46 @@ Additionally, the TwitchClient can gather information about viewers on a per-cha
 | Badges | A collection of Badges applicable to the viewer. Usually displayed to the left of the viewer's name in Twitch chat. |
 
 # Using the Message Queue
+There is a message queue which can retain IRC messages for later processing automatically. To turn it on when joining a channel, pass 'true' as the second parameter:
+
+```csharp
+client.JoinChannel(channelName, true);
+```
+
+Alternatively, you can turn message queing on and off later using the StartQueue() and StopQueue() methods of the Channel:
+
+To start queueing messages for a channel:
+```csharp
+string channelName = ...
+client.Channels[channelName].StartQueue();
+```
+
+To stop queueing messages for a joined channel:
+```csharp
+string channelName = ...
+client.Channels[channelName].StopQueue();
+```
+
+To analyze the messages in the message queue, you can get the MessageQueue object from a joined Channel, then get the Queue from the MessageQueue:
+
+```csharp
+string channelName = ...
+List<IRCMessage> messageQueue = client.Channels[channelName].MessageQueue.Queue;
+
+foreach(IRCMessage message in messageQueue) 
+{
+    //Do something with the message
+    if(message is PrivateMessage) 
+    {
+        //Do something only with viewer messages.
+    }
+}
+```
 
 # Loading the Current List of Viewers
+The TwitchClient has a method which can be used to pull a list of all viewer names currently in a channel. This method should not be called frequently, otherwise you risk having your access blocked. Do not call this method more than once per minute. If you are using the TwitchClient, it is recommended that you only call this method once at application start time to sync the viewers monitored by the client with the live channel. The TwitchClient will automatically track viewers as they enter and leave after that so the method does not need to be called again.
+
+```csharp
+string channelName = ...
+client.LoadViewerList(channelName);
+```
