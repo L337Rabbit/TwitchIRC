@@ -3,10 +3,13 @@ C#/.NET API for sending and receiving Twitch IRC chat messages.
 
 For more information on Twitch's IRC interface see https://dev.twitch.tv/docs/irc/guide.
 
-# Creating a Simple Chat Client
+# Security/Authentication
 To get started, you will need to get an OAUTH token from Twitch at https://twitchapps.com/tmi/. See https://dev.twitch.tv/docs/irc/guide for further info.
 
 Do not share your OAUTH token with anyone. If you're doing development on stream, read further down to see 2 methods for keeping your token a secret.
+
+# Creating a Simple Chat Client
+The heart of this Twitch IRC API is the TwitchClient class. To create a new TwitchClient, you will need to set credentials using a twitch username and OAUTH token (see previous section for that). You can then create a client by doing the following:
 
 ```csharp
 using okitoki.twitch.irc.client;
@@ -19,6 +22,8 @@ client.Credentials = new Credentials(login, oauthToken);
 client.ActivateAutoReconnect();
 client.Connect();
 ```
+
+Note that the OAUTH token should NOT include the "oauth:" portion.
 
 # Joining a Twitch Channel
 Once you have a client, you can then use it to join any Twitch channel (as long as the user you are using isn't banned in that channel):
