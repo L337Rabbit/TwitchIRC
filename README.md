@@ -6,6 +6,7 @@ For more information on Twitch's IRC interface see https://dev.twitch.tv/docs/ir
 # Installation/Setup
 To use this client library, you only need the DLLs found in the **releases** folder. Currently only .NET versions 4.6.1, 4.7.1, and 4.7.2 are precompiled, but these should work with any version of .NET higher than those versions. For example: if you are using .NET 4.7.3 or higher, any of the release versions should work. If you are using .NET 4.5.0, none of the pre-compiled releases will work and you will need to pull the code, patch, and recompile for your targeted framework version.
 
+# Unity Installation
 To use in Unity, just copy all of the DLL files from the appropriate **releases** folder to anywhere in your Unity project's **Assets** folder.
 
 # Security/Authentication
