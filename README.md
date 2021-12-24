@@ -230,7 +230,7 @@ client.OnHostMessageReceived += HostReceived;
 To send a message in chat, just use the SendChatMessage() method after joining a channel:
 
 ```csharp
-string channelName = ...
+string channelName = ...;
 string message = "Goodbye world :)";
 client.SendChatMessage(channelName, message);
 ```
@@ -255,7 +255,7 @@ Dictionary<string, Viewer> viewers = client.Viewers;
 To get global information about a specific viewer, use the GetViewer() method:
 
 ```csharp
-string viewerName = ...
+string viewerName = ...;
 Viewer viewer = client.GetViewer(viewerName);
 
 if(viewer != null) 
@@ -276,8 +276,8 @@ Additionally, the TwitchClient can gather information about viewers on a per-cha
 To get channel specific information about a viewer (if available), use the GetViewerInfo() method:
 
 ```csharp
-string channelName = ...
-string viewerName = ...
+string channelName = ...;
+string viewerName = ...;
 ViewerChannelInfo viewerInfo = client.GetViewerInfo(channelName, viewerName);
 
 if(viewerInfo != null) 
@@ -305,20 +305,20 @@ Alternatively, you can turn message queing on and off later using the StartQueue
 
 To start queueing messages for a channel:
 ```csharp
-string channelName = ...
+string channelName = ...;
 client.Channels[channelName].StartQueue();
 ```
 
 To stop queueing messages for a joined channel:
 ```csharp
-string channelName = ...
+string channelName = ...;
 client.Channels[channelName].StopQueue();
 ```
 
 To analyze the messages in the message queue, you can get the MessageQueue object from a joined Channel, then get the Queue from the MessageQueue:
 
 ```csharp
-string channelName = ...
+string channelName = ...;
 List<IRCMessage> messageQueue = client.Channels[channelName].MessageQueue.Queue;
 
 foreach(IRCMessage message in messageQueue) 
@@ -335,6 +335,6 @@ foreach(IRCMessage message in messageQueue)
 The TwitchClient has a method which can be used to pull a list of all viewer names currently in a channel. This method should not be called frequently, otherwise you risk having your access blocked. Do not call this method more than once per minute. If you are using the TwitchClient, it is recommended that you only call this method once at application start time to sync the viewers monitored by the client with the live channel. The TwitchClient will automatically track viewers as they enter and leave after that so the method does not need to be called again. Calling this method before calling client.Connect() is recommended but not necessary.
 
 ```csharp
-string channelName = ...
+string channelName = ...;
 client.LoadViewerList(channelName);
 ```
