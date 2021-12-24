@@ -3,7 +3,7 @@ This is a C#/.NET API for sending and receiving Twitch IRC chat messages.
 
 For more information on Twitch's IRC interface see https://dev.twitch.tv/docs/irc/guide.
 
-Installation/Setup
+# Installation/Setup
 To use this client library, you only need the DLLs found in the **releases** folder. Currently only .NET versions 4.6.1, 4.7.1, and 4.7.2 are supported, but these should work with any version of .NET higher than those versions. So if you are using .NET 4.8.1 for example, any of the release versions should work. If you are using 4.5.0, none of them will.
 
 To use in Unity, just copy all of the DLL files from the appropriate **releases** folder to anywhere in your Unity project's **Assets** folder.
