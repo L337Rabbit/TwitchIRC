@@ -28,6 +28,7 @@ client.Credentials = new Credentials(login, oauthToken);
 client.ActivateAutoReconnect();
 client.Connect();
 ```
+Note that the OAUTH token should NOT include the "oauth:" portion.
 
 ## Using the Client in Unity
 If using the TwitchClient in Unity, you should also tell the client to Disconnect() in the OnDestroy() method of whatever script is is controlled by. An example of a Unity MonoBehavior using the TwitchClient is below:
@@ -70,8 +71,6 @@ public class TwitchTest : MonoBehaviour
     }
 }
 ```
-
-Note that the OAUTH token should NOT include the "oauth:" portion.
 
 # Joining a Twitch Channel
 Once you have a client, you can then use it to join any Twitch channel (as long as the user you are using isn't banned in that channel):
