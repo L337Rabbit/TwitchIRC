@@ -69,41 +69,44 @@ client.LoadCredentials(credentialsFilePath);
 This method is less secure since anyone with access to the credentials file has access to your OAUTH token, but may be a bit easier to set up. If you use this approach, make sure not to open the credential file on stream or share it with anyone, including accidentally committing the file to a code repository like Github.
 
 # Handling specific message types
-This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented in the **Examples** section below. All messages can be received and relayed to your own methods for processing using the event handlers of the TwitchClient. The various types of message event handlers available are described in the following table:
+This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented in the **Examples** section below. All messages can be received and relayed to your own methods for processing using the event handlers of the TwitchClient. The various types of message event handlers available are described in the following table.
 
-| Handler Name | Description |
+## Message Handler Table
+
+| Handler Name | Message Type | Description |
 | --- | --- |
-| OnPrivateMessageReceived | Called when a chat message from a specific user comes in. |
-| OnSubReceived | Called when a subscription notification comes in. |
-| OnGiftedSubReceived | Called when a gifted subscription comes in. |
-| OnRaidMessageReceived | Called when a raid notification comes in. |
-| OnHostMessageReceived | Called when a host notification comes in. |
-| OnUserNoticeReceived | Called when a notice about a specific user in chat comes in. |
-| OnUserStateReceived | Called when channel-specific state information about a specific user in chat comes in. |
-| OnGlobalUserStateReceived | Called when global state information about a specific user in chat comes in. This |
-| OnUnraidMessageReceived | Called when an unraid notification comes in. |
-| OnRoomStateReceived | Called when a room state notification comes in. |
-| OnJoinMessageReceived | Called when a viewer enters a joined channel. |
-| OnPartMessageReceived | Called when a viewer leaves a joined channel. |
-| OnNoticeReceived | Called when a NOTICE is received. See https://dev.twitch.tv/docs/irc/msg-id for NOTICE types. |
-| OnBitsBadgeTierUpdateReceived | Called when a notification about a viewer's bits badge being upgraded comes in. |
-| OnGiftSubUpgradeReceived | Called when a viewer converts from a gifted sub to a paid sub. |
-| OnPrimeSubUpgradeReceived | Called when a viewer converts from an Amazon prime sub to a paid sub. |
-| OnRitualMessageReceived | Called when a ritual notification is received. Currently this only indicates when a new chatter has joined. |
-| OnClearAllMessagesOfUserReceived | Called when a notification has been received indicating that all messages of a specific viewer have been deleted. |
-| OnClearSingleUserMessageReceived | Called when a notification has been received indicating that a single message of a specific viewer was deleted. |
-| OnReconnectMessageReceived | Called when the Twitch server is indicating to the client to reconnect. |
-| OnPingReceived | Called when a ping is received from Twitch servers. |
-| OnAnyMessageReceived | Called when any type of message is received by the client. |
-| OnChannelSpecificMessageReceived | Called when any type of message specific to a channel is received. |
-| OnGeneralUserNoticeReceived | Called when an unrecognized type of USER NOTICE is received. |
+| OnPrivateMessageReceived | PrivateMessage | Called when a chat message from a specific user comes in. |
+| OnSubReceived | SubscriptionNotice | Called when a subscription notification comes in. |
+| OnGiftedSubReceived | GiftedSubscriptionNotice | Called when a gifted subscription comes in. |
+| OnRaidMessageReceived | RadiNotice | Called when a raid notification comes in. |
+| OnHostMessageReceived | HostTargetMessage | Called when a host notification comes in. |
+| OnUserNoticeReceived | UserNoticeMessage | Called when a notice about a specific user in chat comes in. |
+| OnUserStateReceived | UserStateMessage | Called when channel-specific state information about a specific user in chat comes in. |
+| OnGlobalUserStateReceived | GlobalUserStateMessage | Called when global state information about a specific user in chat comes in. This |
+| OnUnraidMessageReceived | UnraidNotice | Called when an unraid notification comes in. |
+| OnRoomStateReceived | RoomStateMessage | Called when a room state notification comes in. |
+| OnJoinMessageReceived | JoinMessage | Called when a viewer enters a joined channel. |
+| OnPartMessageReceived | PartMessage | Called when a viewer leaves a joined channel. |
+| OnNoticeReceived | NoticeMessage | Called when a NOTICE is received. See https://dev.twitch.tv/docs/irc/msg-id for NOTICE types. |
+| OnBitsBadgeTierUpdateReceived | BitsBadgeTierChangeNotice | Called when a notification about a viewer's bits badge being upgraded comes in. |
+| OnGiftSubUpgradeReceived | GiftToPaidSubscriptionUpgradeNotice | Called when a viewer converts from a gifted sub to a paid sub. |
+| OnPrimeSubUpgradeReceived | PrimeToPaidSubscriptionUpgradeNotice | Called when a viewer converts from an Amazon prime sub to a paid sub. |
+| OnRitualMessageReceived | RitualNotice | Called when a ritual notification is received. Currently this only indicates when a new chatter has joined. |
+| OnClearAllMessagesOfUserReceived | ClearAllMessage | Called when a notification has been received indicating that all messages of a specific viewer have been deleted. |
+| OnClearSingleUserMessageReceived | ClearSingleMessage | Called when a notification has been received indicating that a single message of a specific viewer was deleted. |
+| OnReconnectMessageReceived | ReconnectMessage | Called when the Twitch server is indicating to the client to reconnect. |
+| OnPingReceived | PingMessage | Called when a ping is received from Twitch servers. |
+| OnAnyMessageReceived | IRCMessage | Called when any type of message is received by the client. |
+| OnChannelSpecificMessageReceived | ChannelSpecificMessage | Called when any type of message specific to a channel is received. |
+| OnGeneralUserNoticeReceived | GeneralUserNotice | Called when an unrecognized type of USER NOTICE is received. |
 
+## General Approach
 To process messages as they come in, you just need to define your own methods and add them to the appropriate handler. The general steps are outlined below:
 
 1. Define a method in your own code with the following format (you can call the method whatever, just make sure the argument types match):
 
 ```csharp
-private void SomeMessageReceived(object sender, **MessageType** msg) {...}
+private void SomeMessageReceived(object sender, **Message Type** msg) {...}
 ```
 
 2. Add your method to the appropriate TwitchClient handler:
@@ -117,7 +120,7 @@ Now, whenever a message comes in, your method will run!
 ## Examples:
 ### Processing Viewer Messages
 
-1. Define a method in your own code with the following format (you can call the method whatever, just make sure the argument types match):
+1. Define a method for processing chat messages:
 
 ```csharp
 private void ChatMessageReceived(object sender, PrivateMessage msg) 
@@ -131,8 +134,6 @@ private void ChatMessageReceived(object sender, PrivateMessage msg)
 ```csharp
 client.OnPrivateMessageReceived += ChatMessageReceived;
 ```
-
-Now, whenever a new viewer message comes in, your method will run!
 
 ### Tracking Viewers Entering/Leaving
 
