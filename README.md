@@ -29,6 +29,48 @@ client.ActivateAutoReconnect();
 client.Connect();
 ```
 
+## Using the Client in Unity
+If using the TwitchClient in Unity, you should also tell the client to Disconnect() in the OnDestroy() method of whatever script is is controlled by. An example of a Unity MonoBehavior using the TwitchClient is below:
+
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using okitoki.twitch.irc.client;
+using okitoki.twitch.irc.messaging;
+
+public class TwitchTest : MonoBehaviour
+{
+    public string username;
+    public string oauthToken;
+    private TwitchClient client = new TwitchClient();
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        client.Credentials = new Credentials(username, oauthToken);
+        client.ActivateAutoReconnect();
+        client.OnPrivateMessageReceived += PrivateMessageReceived;
+        client.Connect();
+
+        client.JoinChannel("rabbit_xxxx");
+    }
+
+    // Update is called once per frame
+    void Update() { }
+
+    private void PrivateMessageReceived(object sender, PrivateMessage message)
+    {
+        Debug.Log("Received message from " + message.Username + ": " + message.Message);
+    }
+
+    private void OnDestroy()
+    {
+        client.Disconnect();
+    }
+}
+```
+
 Note that the OAUTH token should NOT include the "oauth:" portion.
 
 # Joining a Twitch Channel
