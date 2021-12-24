@@ -98,12 +98,45 @@ This API supports nearly the entirety of the Twitch IRC message library and is t
 | OnChannelSpecificMessageReceived | Called when any type of message specific to a channel is received. |
 | OnGeneralUserNoticeReceived | Called when an unrecognized type of USER NOTICE is received. |
 
+To process messages as they come in, you just need to define your own methods and add them to the appropriate handler. The general steps are outlined below:
+
+1. Define a method in your own code with the following format (you can call the method whatever, just make sure the argument types match):
+
+```csharp
+private void SomeMessageReceived(object sender, **MessageType** msg) {...}
+```
+
+2. Add your method to the appropriate TwitchClient handler:
+
+```csharp
+client.OnSomeMessageReceived += SomeMessageReceived;
+```
+
+Now, whenever a message comes in, your method will run!
+
 ## Examples:
-### Processing Chat Messages
+### Processing Viewer Messages
 
+1. Define a method in your own code with the following format (you can call the method whatever, just make sure the argument types match):
 
+```csharp
+private void ChatMessageReceived(object sender, PrivateMessage msg) 
+{
+    Console.WriteLine("Received private message: " + msg.Channel + "/" + msg.Username + ": " + msg.Message);
+}
+```
+
+2. Add your method to the appropriate TwitchClient handler:
+
+```csharp
+client.OnPrivateMessageReceived += ChatMessageReceived;
+```
+
+Now, whenever a new viewer message comes in, your method will run!
 
 ### Tracking Viewers Entering/Leaving
+
+
 
 ### Detecting Subscriptions
 
