@@ -1,5 +1,5 @@
 # TwitchIRC
-C#/.NET API for sending and receiving Twitch IRC chat messages.
+This is a C#/.NET API for sending and receiving Twitch IRC chat messages.
 
 For more information on Twitch's IRC interface see https://dev.twitch.tv/docs/irc/guide.
 
