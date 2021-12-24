@@ -1,6 +1,8 @@
 # TwitchIRC
 C#/.NET API for sending and receiving Twitch IRC chat messages.
 
+For more information on Twitch's IRC interface see https://dev.twitch.tv/docs/irc/guide.
+
 # Creating a Simple Chat Client
 To get started, you will need to get an OAUTH token from Twitch at https://twitchapps.com/tmi/. See https://dev.twitch.tv/docs/irc/guide for further info.
 
