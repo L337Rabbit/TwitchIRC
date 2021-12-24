@@ -18,6 +18,7 @@ client.ActivateAutoReconnect();
 client.Connect();
 ```
 
+# Joining a Twitch Channel
 Once you have a client, you can then use it to join any Twitch channel (as long as the user you are using isn't banned in that channel):
 
 ```csharp
@@ -68,20 +69,48 @@ client.LoadCredentials(credentialsFilePath);
 This method is less secure since anyone with access to the credentials file has access to your OAUTH token, but may be a bit easier to set up. If you use this approach, make sure not to open the credential file on stream or share it with anyone, including accidentally committing the file to a code repository like Github.
 
 # Handling specific message types
-This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented below.
+This API supports nearly the entirety of the Twitch IRC message library and is too extensive to cover every possible message type in this README; however, the more common cases are presented in the **Examples** section below. All messages can be received and relayed to your own methods for processing using the event handlers of the TwitchClient. The various types of message event handlers available are described in the following table:
 
-# Examples:
-## Processing Chat Messages
+| Handler Name | Description |
+| OnPrivateMessageReceived | Called when a chat message from a specific user comes in. |
+| OnSubReceived | Called when a subscription notification comes in. |
+| OnGiftedSubReceived | Called when a gifted subscription comes in. |
+| OnRaidMessageReceived | Called when a raid notification comes in. |
+| OnHostMessageReceived | Called when a host notification comes in. |
+| OnUserNoticeReceived | Called when a notice about a specific user in chat comes in. |
+| OnUserStateReceived | Called when channel-specific state information about a specific user in chat comes in. |
+| OnGlobalUserStateReceived | Called when global state information about a specific user in chat comes in. This |
+| OnUnraidMessageReceived | Called when an unraid notification comes in. |
+| OnRoomStateReceived | Called when a room state notification comes in. |
+| OnJoinMessageReceived | Called when a viewer enters a joined channel. |
+| OnPartMessageReceived | Called when a viewer leaves a joined channel. |
+| OnNoticeReceived | Called when a NOTICE is received. See https://dev.twitch.tv/docs/irc/msg-id for NOTICE types. |
+| OnBitsBadgeTierUpdateReceived | Called when a notification about a viewer's bits badge being upgraded comes in. |
+| OnGiftSubUpgradeReceived | Called when a viewer converts from a gifted sub to a paid sub. |
+| OnPrimeSubUpgradeReceived | Called when a viewer converts from an Amazon prime sub to a paid sub. |
+| OnRitualMessageReceived | Called when a ritual notification is received. Currently this only indicates when a new chatter has joined. |
+| OnClearAllMessagesOfUserReceived | Called when a notification has been received indicating that all messages of a specific viewer have been deleted. |
+| OnClearSingleUserMessageReceived | Called when a notification has been received indicating that a single message of a specific viewer was deleted. |
+| OnReconnectMessageReceived | Called when the Twitch server is indicating to the client to reconnect. |
+| OnPingReceived | Called when a ping is received from Twitch servers. |
+| OnAnyMessageReceived | Called when any type of message is received by the client. |
+| OnChannelSpecificMessageReceived | Called when any type of message specific to a channel is received. |
+| OnGeneralUserNoticeReceived | Called when an unrecognized type of USER NOTICE is received. |
 
-## Tracking Viewers Entering/Leaving
-
-## Detecting Subscriptions
-
+## Examples:
+### Processing Chat Messages
 
 
-## Detecting Raids
 
-## Detecting Hosts
+### Tracking Viewers Entering/Leaving
+
+### Detecting Subscriptions
+
+
+
+### Detecting Raids
+
+### Detecting Hosts
 
 
 # Sending Messages in Chat
@@ -105,3 +134,7 @@ Additionally, the TwitchClient can gather information about viewers on a per-cha
 | IsMod | Whether the viewer is a mod in the channel. |
 | ViewerType | The type of viewer (ADMIN, BROADCASTER, GLOBAL_MODERATOR, MODERATOR, STAFF, VIEWER, or VIP). |
 | Badges | A collection of Badges applicable to the viewer. Usually displayed to the left of the viewer's name in Twitch chat. |
+
+# Using the Message Queue
+
+# Loading the Current List of Viewers
