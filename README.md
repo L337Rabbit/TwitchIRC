@@ -50,7 +50,7 @@ client.DecryptCredentials(myEncryptionPassword);
 You can further increase the security of the token by using a password input box to enter the "myEncryptionPassword" password secretly prior to creating the Twitch client and loading credentials.
 
 # Keeping your token a secret (Method 2)
-As an alternative to method 1 avobe, you can create a credentials file and manually add your login username and OAUTH token to it (unencrypted), then load this credential file when your program runs. The file contents should look like the following:
+As an alternative to method 1 above, you can create a credentials file and manually add your login username and OAUTH token to it (unencrypted), then load this credential file when your program runs. The file contents should look like the following:
 
 ```json
 {"username":"your_twitch_username","oauth-token":"your_oauth_token"}
