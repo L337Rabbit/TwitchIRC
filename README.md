@@ -90,6 +90,7 @@ This API supports nearly the entirety of the Twitch IRC message library and is t
 The TwtichClient can automatically gather certain information about viewers as they send messages in chat. The amount of information obtained about viewers using this mechanism is limited, but includes the following:
 
 | Property Name | Description |
+| --- | --- |
 | UserID | The numeric Twitch ID assigned to the user. Example: 401223 |
 | Username | The login name of the user. This is identical to display name except all lowercase. |
 | DisplayName | The name of the user as displayed in Twitch chat with correct capitalization. |
@@ -99,6 +100,7 @@ The TwtichClient can automatically gather certain information about viewers as t
 Additionally, the TwitchClient can gather information about viewers on a per-channel basis. This information includes the following:
 
 | Property Name | Description |
+| --- | --- |
 | MonthsSubscribed | The number of months the viewer has been subscribed to the channel. |
 | IsMod | Whether the viewer is a mod in the channel. |
 | ViewerType | The type of viewer (ADMIN, BROADCASTER, GLOBAL_MODERATOR, MODERATOR, STAFF, VIEWER, or VIP). |
